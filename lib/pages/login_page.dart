@@ -1,8 +1,11 @@
+import 'package:chat/helpers/mostrar_alerta.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:chat/widgets/blue_botton.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/custom_logo.dart';
 import 'package:chat/widgets/label.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key key}) : super(key: key);
@@ -51,6 +54,7 @@ class __FormStateState extends State<_FormState> {
   final passCtrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService  = Provider.of<AuthService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -70,9 +74,18 @@ class __FormStateState extends State<_FormState> {
         //TODO: CREAR BOTON
         BlueBotton(
           text: 'Ingrese',
-          onPressed: () {
-            print(emailCtrl.text);
-            print(passCtrl.text);
+          onPressed: authService.autenticando? null :  () async {
+            FocusScope.of(context).unfocus();
+           
+           final loginOk  = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
+
+          if(loginOk){
+           Navigator.pushReplacementNamed(context, 'usuarios');
+            //TODO: CONECTARME A LOS SOCKETS
+          }else{
+            mostrarAlerta(context, 'Login incorrecto', 'Verifique sus credenciales');
+          }
+
           },
         ),
       ]),
