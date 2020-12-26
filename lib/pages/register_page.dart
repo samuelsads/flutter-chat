@@ -1,5 +1,6 @@
 import 'package:chat/helpers/mostrar_alerta.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/blue_botton.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/custom_logo.dart';
@@ -55,6 +56,7 @@ class __FormStateState extends State<_FormState> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketServices = Provider.of<SocketServices>(context);
     return Container(
       margin: EdgeInsets.only(top: 40),
       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -87,6 +89,7 @@ class __FormStateState extends State<_FormState> {
                       emailCtrl.text.trim(), passCtrl.text.trim());
                   if (registroOk == true) {
                     Navigator.pushReplacementNamed(context, 'usuarios');
+                    socketServices.connect();
                     //TODO: CONECTARME A LOS SOCKETS
                   } else {
                     mostrarAlerta(context, 'Registro incorrecto',
